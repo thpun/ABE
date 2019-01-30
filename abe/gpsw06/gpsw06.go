@@ -1,18 +1,5 @@
 package gpsw06
 
-import (
-	"io"
-
-	"github.com/cloudflare/bn256"
-)
-
-type GPSW06 struct {
-	r        *io.Reader
-	universe []attribute
-	g1       *bn256.G1
-	g2       *bn256.G2
-}
-
 func (algo *GPSW06) Setup() (PublicKey, MasterKey, error) {
 
 }
