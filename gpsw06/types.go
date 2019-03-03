@@ -1,8 +1,6 @@
 package gpsw06
 
 import (
-	"io"
-
 	"github.com/Nik-U/pbc"
 )
 
@@ -10,7 +8,7 @@ type G1 = pbc.Element
 type G2 = pbc.Element
 type GT = pbc.Element
 type Zr = pbc.Element
-type Params = pbc.Params
+type Pairing = pbc.Pairing
 
 type PublicKey struct {
 	// contains filtered or unexported fields
@@ -20,7 +18,8 @@ type PublicKey struct {
 
 type DecryptKey struct {
 	// contains filtered or unexported fields
-	d map[uint]*G1
+	d    map[int]*G1
+	tree []byte
 }
 
 type MasterKey struct {
@@ -36,17 +35,30 @@ type Message struct {
 
 type Ciphertext struct {
 	// contains filtered or unexported fields
-	atts []uint
-	eMsg *GT
-	e    map[uint]*G2
+	attrs    map[int]struct{}
+	encMsg   *GT
+	encAttrs map[int]*G2
 }
 
 type GPSW06 struct {
-	params   *Params
-	r        *io.Reader
-	universe []attribute
-	g1       *G1
-	g2       *G2
+	universe []Attribute
+}
+
+type polynomial struct {
+	c []*Zr
+}
+
+// NewMessage creates an empty Message.
+func NewMessage() *Message {
+	return &Message{
+		pairing.NewGT(),
+	}
+}
+
+// Rand set msg to a random value and returns msg.
+func (msg *Message) Rand() *Message {
+	msg.m.Rand()
+	return msg
 }
 
 // Marshal converts msg into a byte slice.
@@ -58,4 +70,22 @@ func (msg *Message) Marshal() []byte {
 // a group element and then returns msg.
 func (msg *Message) Unmarshal(b []byte) ([]byte, error) {
 	return msg.m.SetBytes(b).Bytes(), nil
+}
+
+func newPolynomial(deg int) *polynomial {
+	return &polynomial{make([]*Zr, deg)}
+}
+
+func (p *polynomial) evaluate(x *Zr) *Zr {
+	output := pairing.NewZr()
+	temp := pairing.NewZr().Set1()
+	for i, c := range p.c {
+		temp.Set1()
+		if i != 0 {
+			temp.PowZn(x, pairing.NewZr().SetInt32(int32(i)))
+		}
+		temp.Mul(temp, c)
+		output.Add(output, temp)
+	}
+	return output
 }

@@ -1,0 +1,44 @@
+package gpsw06
+
+import (
+	"github.com/Nik-U/pbc"
+)
+
+func loadParams(param, g1Str, g2Str string) (*Pairing, *G1, *G2, error) {
+	pairing, err := pbc.NewPairingFromString(param)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	g1, ok := pairing.NewG1().SetString(g1Str, 10)
+	if !ok {
+		return nil, nil, nil, ErrInvalidG1
+	}
+
+	g2, ok := pairing.NewG2().SetString(g2Str, 10)
+	if !ok {
+		return nil, nil, nil, ErrInvalidG2
+	}
+
+	return pairing, g1, g2, nil
+}
+
+const (
+	_paramString = `type f
+q 205523667896953300194896352429254920972540065223
+r 205523667896953300194895899082072403858390252929
+b 139507509468361798552196122759192691836972577263
+beta 15606031178958009344685105791894312568305099226
+alpha0 25011689388863022615671843304998258501903150972
+alpha1 129537462178926011562106911092030005438398292004
+`
+	_g1 = `[202527640348031079730629246474818261419579118263, 180537063276401899069104722269870587314865100539]`
+	_g2 = `[[147603417426612078740347779013737912959103524828, 191046106005551314675127553295251308383334667626], [56893881299661653877908568320318747746711560057, 184923601172317216829423577184466028929085267159]]`
+)
+
+var (
+	pairing, g1, g2, _ = loadParams(_paramString, _g1, _g2)
+
+	zero = pairing.NewZr().Set0()
+	e    = pairing.NewGT().Pair(g1, g2) // e(g1, g2) to reduce redundant calculation
+)
