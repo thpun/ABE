@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "a8m3ANZ8G/6EHH2QoFM3KleI6W8=",
+			"path": "github.com/Nik-U/pbc",
+			"revision": "3e516ca0c5d64646fd1c3aeb1ecd41dacba1f0c6",
+			"revisionTime": "2018-12-05T04:18:46Z"
+		}
+	],
+	"rootPath": "ABE"
+}
