@@ -163,7 +163,7 @@ func (n *nonLeafNode) UnmarshalJSON(data []byte) error {
 	children := make([]Node, 0)
 
 	for i := range tnl.Children {
-		nc, err := nodeFromJSON(tnl.Children[i])
+		nc, err := NodeFromJSON(tnl.Children[i])
 		if err != nil {
 			return err
 		}
@@ -201,7 +201,7 @@ func (n *nonLeafNode) Equal(node Node) bool {
 	}
 }
 
-func nodeFromJSON(data []byte) (Node, error) {
+func NodeFromJSON(data []byte) (Node, error) {
 	switch data[2] {
 	case 'a':
 		// Try leaf node

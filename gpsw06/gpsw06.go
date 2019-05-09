@@ -148,7 +148,7 @@ func (algo *GPSW06) KeyGen(tree Node, msk *MasterKey) (*DecryptKey, error) {
 // Decrypt takes ciphertext c and decryption key dk as input and returns the
 // decrypted message if attributes in c Satisfy policy in dk.
 func (algo *GPSW06) Decrypt(ct *Ciphertext, key *DecryptKey) (*Message, error) {
-	tree, err := nodeFromJSON(key.tree)
+	tree, err := NodeFromJSON(key.tree)
 	if err != nil {
 		return nil, err
 	}
