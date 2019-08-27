@@ -20,7 +20,7 @@ func TestLeafNode_MarshalJSON(t *testing.T) {
 }
 
 func TestLeafNode_UnmarshalJSON(t *testing.T) {
-	var l = &leafNode{"TestLeafNode_UnmarshalJSON", nil}
+	var l = &leafNode{"TestLeafNode_MarshalJSON", nil}
 	var l2 leafNode
 	if err := l2.UnmarshalJSON(data); err != nil {
 		t.Errorf("Error during de-serializing leaf node: %v", err)

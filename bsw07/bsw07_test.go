@@ -3,17 +3,7 @@ package bsw07
 import "testing"
 
 var (
-	labels = []string{
-		"a",
-		"b",
-		"c",
-		"d",
-		"e",
-		"f",
-		"g",
-	}
-
-	algo   *GPSW06
+	algo   *BSW07
 	cipher *Ciphertext
 	msg    *Message
 	msk    *MasterKey
@@ -22,45 +12,43 @@ var (
 )
 
 func TestNewGPSW06(t *testing.T) {
-	_, err := NewGPSW06(NewAttributes(labels))
+	_, err := NewBSW07()
 	if err != nil {
 		t.Errorf("Error (%v) during initializing GPSW06.", err)
 	}
 }
 
 func TestGPSW06_Encrypt(t *testing.T) {
-	algo, _ = NewGPSW06(NewAttributes(labels))
+	algo, _ = NewBSW07()
 	pk, msk = algo.Setup()
 
-	attrsForCipher := make(map[int]struct{})
-	attrsForCipher[1] = struct{}{}
-	attrsForCipher[2] = struct{}{}
-	attrsForCipher[4] = struct{}{}
-	attrsForCipher[6] = struct{}{}
+	tree := &leafNode{
+		"a",
+		nil,
+	}
 
 	msg = NewMessage().Rand()
 
 	var err error
-	cipher, err = algo.Encrypt(msg, attrsForCipher, pk)
+	cipher, err = algo.Encrypt(pk, msg, tree)
 	if err != nil {
 		t.Errorf("Error (%v) during encrypting. Msg: %v.", err, msg)
 	}
 }
 
 func TestGPSW06_KeyGen(t *testing.T) {
-	tree := &leafNode{
-		1,
-		nil,
-	}
+	attrsForCipher := make(map[string]struct{})
+	attrsForCipher["a"] = struct{}{}
+	attrsForCipher["b"] = struct{}{}
+	attrsForCipher["f"] = struct{}{}
+	attrsForCipher["h"] = struct{}{}
 
 	var err error
-	dk, err = algo.KeyGen(tree, msk)
+	dk, err = algo.KeyGen(msk, attrsForCipher)
 	if err != nil {
 		t.Errorf("Error (%v) during decryption key generation.", err)
 	}
 	t.Logf("Decryption key: %v", dk)
-	t.Logf("%v", dk.d[1])
-	t.Logf("%v", dk.tree)
 }
 
 func TestGPSW06_Decrypt(t *testing.T) {
@@ -72,7 +60,7 @@ func TestGPSW06_Decrypt(t *testing.T) {
 		return
 	}
 
-	if !plain.m.Equals(msg.m) {
+	if !plain.M.E.Equals(msg.M.E) {
 		t.Errorf("Message before encryption and after decryption differs.")
 	}
 }
