@@ -8,10 +8,9 @@ import (
 
 func main() {
 	pbc.SetCryptoRandom()
-	params := pbc.GenerateF(160)
+	params := pbc.GenerateA(160, 512)
 	pairing := params.NewPairing()
 
 	fmt.Printf("--BEGIN--%s--END--\n", params.String())
 	fmt.Printf("--BEGIN--%s--END--\n", pairing.NewG1().Rand().String())
-	fmt.Printf("--BEGIN--%s--END--\n", pairing.NewG2().Rand().String())
 }
