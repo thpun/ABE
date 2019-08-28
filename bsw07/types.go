@@ -12,8 +12,8 @@ type Element struct {
 }
 
 type tempEl struct {
-	Field string          `json:"field"`
-	E     json.RawMessage `json:"e"`
+	Field string `json:"field"`
+	E     []byte `json:"e"`
 }
 
 type G = Element
