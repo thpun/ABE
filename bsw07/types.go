@@ -158,6 +158,15 @@ func (msg *Message) Rand() *Message {
 	return msg
 }
 
+func (msg *Message) Marshal() []byte {
+	return msg.M.E.Bytes()
+}
+
+func (msg *Message) Unmarshal(b []byte) error {
+	msg.M.E.SetBytes(b)
+	return nil
+}
+
 func newPolynomial(deg int) *polynomial {
 	return &polynomial{make([]*Zr, deg)}
 }
